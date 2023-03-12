@@ -1,13 +1,18 @@
 package com.example.myrestfulservice.hello;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/")
 public class HelloWorldController {
+
+    @Autowired
+    private MessageSource messageSource;
+
     @GetMapping("/hello")
     public String hello(){
         return "Hello World";
@@ -21,5 +26,10 @@ public class HelloWorldController {
     @GetMapping(path="/path/{name}")
     public HelloBean path(@PathVariable String name){
         return new HelloBean(String.format("hello world %s", name));
+    }
+
+    @GetMapping(path="/hello-world-internationalized")
+    public String helloWorldInternationalized(@RequestHeader(name="Accept-Language", required = false) Locale locale ){
+        return messageSource.getMessage("greeting.message", null, locale);
     }
 }
